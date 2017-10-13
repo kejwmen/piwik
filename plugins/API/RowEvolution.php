@@ -317,6 +317,13 @@ class RowEvolution
         $reportMetadata = API::getInstance()->getMetadata($idSite, $apiModule, $apiAction, $apiParameters, $language,
             $period, $date, $hideMetricsDoc = false, $showSubtableReports = true);
 
+        // ignore idGoal if no report can be found with it
+        if (empty($reportMetadata) && isset($apiParameters['idGoal'])) {
+            unset($apiParameters['idGoal']);
+            $reportMetadata = API::getInstance()->getMetadata($idSite, $apiModule, $apiAction, $apiParameters,
+                $language, $period, $date, $hideMetricsDoc = false, $showSubtableReports = true);
+        }
+
         if (empty($reportMetadata)) {
             throw new Exception("Requested report $apiModule.$apiAction for Website id=$idSite "
                 . "not found in the list of available reports. \n");
